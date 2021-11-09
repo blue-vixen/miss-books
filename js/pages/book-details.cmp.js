@@ -9,7 +9,7 @@ export default {
         <div v-if="!showFormReview" class="details-container">
             <h3>Book Details:</h3>
             <div class="book-imgs">
-                <img class="sale-tag" v-if="book.listPrice.isOnSale" src="/img/sale.png"/>
+                <img class="sale-tag" v-if="book.listPrice.isOnSale" src="./img/sale.png"/>
                 <img v-bind:src="book.thumbnail"/>
             </div>
             <p>Title: {{book.title}}</p>
