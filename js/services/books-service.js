@@ -453,12 +453,14 @@ export const bookService = {
     makeId,
     removeReview,
     getBooksFromGoogle,
-    addGoogleBook
+    addGoogleBook,
+    getNextBookId,
+    getPrevBookId
 }
 
 function query() {
-    let books = _createBooks()
-    return books;
+    let books = loadFromStorage(BOOKS_KEY);
+    return Promise.resolve(books);
 }
 
 function getById(bookId) {
@@ -558,4 +560,19 @@ function _getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
+function getNextBookId(bookId) {
+    return query()
+        .then(books => {
+            const idx = books.findIndex(book => book.id === bookId);
+            return (idx === books.length - 1) ? books[0].id : books[idx + 1].id;
+        });
+}
 
+function getPrevBookId(bookId) {
+    return query()
+        .then(books => {
+            const idx = books.findIndex(book => book.id === bookId);
+            console.log(idx, books.length - 1)
+            return (idx === 0) ? books[books.length - 1].id : books[idx - 1].id;
+        });
+}

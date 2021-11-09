@@ -34,8 +34,6 @@ export default {
         addBook(book) {
             console.log(book)
             bookService.addGoogleBook(book)
-
-
         }
     },
     components: {

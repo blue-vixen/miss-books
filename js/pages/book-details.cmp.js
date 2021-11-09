@@ -28,6 +28,8 @@ export default {
             </div>
             <!-- <button @click="$emit('close')" >X</button> -->
             <router-link :to="'/book'">Go Back</router-link>
+            <router-link :to="'/book/'+prevBookId">< Previous Book</router-link>
+            <router-link :to="'/book/'+nextBookId">Next Book ></router-link>
             <div class="reviews-container">
                 <h3>User Reviews:</h3>
                 <ul class="reviews">
@@ -54,13 +56,15 @@ export default {
     data() {
         return {
             book: null,
-            showFormReview: false
+            showFormReview: false,
+            nextBookId: null,
+            prevBookId: null,
         }
     },
     created() {
-        const { bookId } = this.$route.params;
-        bookService.getById(bookId)
-            .then(book => this.book = book)
+        // const { bookId } = this.$route.params;
+        // bookService.getById(bookId)
+        //     .then(book => this.book = book)
     },
     methods: {
         createMsg(txt, type) {
@@ -89,7 +93,7 @@ export default {
     computed: {
         LengthOfRead() {
             const { pageCount } = this.book
-            console.log(pageCount)
+            // console.log(pageCount)
             if (pageCount > 500) return 'Long Reading'
             else if (pageCount > 200) return 'Decent Reading'
             else if (pageCount < 100) return 'Light Reading'
@@ -118,6 +122,20 @@ export default {
     components: {
         longText,
         reviewAdd
+    },
+    watch: {
+        '$route.params.bookId': {
+            handler() {
+                const { bookId } = this.$route.params;
+                bookService.getById(bookId)
+                    .then(book => this.book = book)
+                bookService.getNextBookId(bookId)
+                    .then(bookId => this.nextBookId = bookId)
+                bookService.getPrevBookId(bookId)
+                    .then(bookId => this.prevBookId = bookId)
+            },
+            immediate: true
+        }
     }
 
 }

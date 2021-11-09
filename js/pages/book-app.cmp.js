@@ -21,8 +21,9 @@ export default {
         }
     },
     created() {
-        this.books = bookService.query()
-        console.log('book app created', this.books)
+        bookService.query()
+            .then(books => this.books = books)
+        // this.books = bookService.query()
     },
     methods: {
         selectBook(book) {
