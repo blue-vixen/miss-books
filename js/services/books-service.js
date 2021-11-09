@@ -1,6 +1,7 @@
 import { storageService } from "./async-storage-service.js";
 
 const BOOKS_KEY = 'books';
+const API_KEY = 'API_BOOKS'
 const gBooks = [
     {
         "id": "OXeMG8wNskc",
@@ -450,11 +451,14 @@ export const bookService = {
     getById,
     saveReview,
     makeId,
-    removeReview
+    removeReview,
+    getBooksFromGoogle,
+    addGoogleBook
 }
 
 function query() {
-    return gBooks;
+    let books = _createBooks()
+    return books;
 }
 
 function getById(bookId) {
@@ -514,3 +518,44 @@ function makeId(length = 5) {
     }
     return text;
 }
+
+function getBooksFromGoogle(searchVal) {
+    return axios.get(`https://www.googleapis.com/books/v1/volumes?printType=books&q=${searchVal}`)
+        .then((res) => {
+            let allValues = res.data.items
+            saveToStorage(API_KEY, allValues)
+            const prm = Promise.resolve(allValues)
+            return prm
+        })
+        .catch('could not get books')
+}
+
+
+function addGoogleBook(book) {
+    let newBook = {
+        "id": null,
+        "title": book.volumeInfo.title,
+        "subtitle": (book.volumeInfo.subtitle) ? book.volumeInfo.subtitle : 'lorem ipsum gassom whatever',
+        "authors": book.volumeInfo.authors,
+        "publishedDate": book.volumeInfo.publishedDate,
+        "description": book.volumeInfo.description,
+        "pageCount": book.volumeInfo.pageCount,
+        "categories": book.volumeInfo.categories,
+        "thumbnail": book.volumeInfo.imageLinks.thumbnail,
+        "language": book.volumeInfo.language,
+        "listPrice": {
+            "amount": _getRandomIntInclusive(20, 100),
+            "currencyCode": "USD",
+            "isOnSale": false
+        }
+    }
+    return storageService.post(BOOKS_KEY, newBook)
+}
+
+function _getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}
+
+

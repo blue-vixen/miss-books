@@ -22,6 +22,7 @@ export default {
     },
     created() {
         this.books = bookService.query()
+        console.log('book app created', this.books)
     },
     methods: {
         selectBook(book) {
@@ -52,5 +53,6 @@ export default {
         bookList,
         bookFilter,
         bookDetails
-    }
+    },
+
 }

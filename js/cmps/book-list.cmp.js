@@ -19,7 +19,11 @@ export default {
             console.log('Logging.....');
         }
     },
+    created() {
+        console.log('Book list created', this.books)
+    },
     components: {
         bookPreview
-    }
+    },
+
 }
